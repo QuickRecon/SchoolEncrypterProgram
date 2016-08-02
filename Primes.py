@@ -3,19 +3,15 @@ import random
 
 class Primes:
 
-    PosPrimes = []
+    Primes = []
 
     def __init__(self):
-        self.computePrimes(pow(10,100), pow(10,101))
+        self.getPrimes()
 
-    def computePrimes(self, min, max):
-        p = 100
-        while not self.isprime(int(p)):
-            p = math.floor(random.random() * ((max - 1) - min + 1)) + min
-            print(str(p) + "is not prime")
-            if self.isprime(int(p)):
-                print(p)
-                return p
+    def getPrimes(self):
+        primefile = open('primes.txt')
+        for line in primefile.splitlines():
+            self.Primes.append(tuple(line.split(",")))
 
     def isprime(self, n):
         """isprime(n) - Test whether n is prime using a variety of pseudoprime tests."""
@@ -38,10 +34,3 @@ class Primes:
             if c == 1: return False
             if c == n - 1: return True
             c = pow(c, 2, n)
-
-    def checkprimeintegrety(self, data):
-        for i in data:
-            if self.isprime(data[i]):
-                return True
-            else:
-                return False
