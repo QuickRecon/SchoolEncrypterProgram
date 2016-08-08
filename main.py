@@ -1,16 +1,20 @@
-from easygui.easygui import *
+#from easygui.easygui import *
 
 #try:
-from Settings import *
 from Encrypter import *
-from Decrypter import *
 import os
 
-settingsFilename = "./appsettings.cfg"
-settings = Settings(settingsFilename)
+message = 421234761237234131412198376523847956238975624897653498763498763457896345897634598767854
+
 encrypter = Encrypter()
 encrypter.genkeypair()
+print(encrypter.converttexttoblockarray(message))
+encrypted = encrypter.encrypt(message, encrypter.publickey)
 
-print("hello")
+print(message)
+print(encrypted)
+print(encrypter.decrypt(encrypted, encrypter.publickey))
+
+
 #except:
     #exceptionbox()
