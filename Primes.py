@@ -5,30 +5,30 @@ import random
 class Primes:
 
     @classmethod
-    def computeCustomPrime(self, min, max):
+    def compute_custom_prime(self, minimum, maximum):
         p = 100
-        while not self.isprime(int(p)):
-            p = math.floor(random.random() * ((max - 1) - min + 1)) + min
-            if self.isprime(int(p)):
+        while not self.is_prime(int(p)):
+            p = math.floor(random.random() * ((maximum - 1) - minimum + 1)) + minimum
+            if self.is_prime(int(p)):
                 print(p)
                 return p
 
     @classmethod
-    def isprime(self, n):
+    def is_prime(self, n):
         """isprime(n) - Test whether n is prime using a variety of pseudoprime tests."""
         if n in [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]:
             return True
-        return self.isprimeE(n, 2) and self.isprimeE(n, 3) and self.isprimeE(n, 5)
+        return self.is_prime_e(n, 2) and self.is_prime_e(n, 3) and self.is_prime_e(n, 5)
 
     @classmethod
-    def isprimeF(self, n, b):
+    def is_prime_f(self, n, b):
         """isprimeF(n) - Test whether n is prime or a Fermat pseudoprime to base b."""
         return pow(b, n - 1, n) == 1
 
     @classmethod
-    def isprimeE(self, n, b):
+    def is_prime_e(self, n, b):
         """isprimeE(n) - Test whether n is prime or an Euler pseudoprime to base b."""
-        if not self.isprimeF(n, b): return False
+        if not self.is_prime_f(n, b): return False
         r = n - 1
         while r % 2 == 0: r //= 2
         c = pow(b, r, n)
