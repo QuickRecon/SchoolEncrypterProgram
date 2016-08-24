@@ -1,4 +1,3 @@
-import math
 import random
 
 
@@ -6,13 +5,13 @@ class Primes:
 
     @classmethod
     def compute_custom_prime(self, minimum, maximum):
-        p = 100
-        while not self.is_prime(int(p)):
-            p = math.floor(random.random() * ((maximum - 1) - minimum + 1)) + minimum
-            if self.is_prime(int(p)):
-                print(p)
-                return p
+        p = random.randint(minimum/2, maximum/2)
+        if p % 2 == 0: p += 1
+        while not self.is_prime(p):
+            p += -2
+        return p
 
+    # Here down in this class is taken from http://pythonfiddle.com/number-theory-functions/ to check primes generated above
     @classmethod
     def is_prime(self, n):
         """isprime(n) - Test whether n is prime using a variety of pseudoprime tests."""

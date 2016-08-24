@@ -1,18 +1,17 @@
 from Primes import *
-from fractions import gcd
-
+import math
 
 
 class Encrypter:
-    smallprimes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+    small_primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 
-    largeprimes = []
+    large_primes = []
 
     exponent = 3
 
-    privatekey = 0
+    private_key = 0
 
-    publickey = []
+    public_key = []
 
     totient = 0
 
@@ -20,23 +19,17 @@ class Encrypter:
 
     blocks = []
 
-    def genkeypair(self):
-        self.largeprimes.append(int(Primes.computeCustomPrime(10 ** 10, 10 ** 15)))
-        self.largeprimes.append(int(Primes.computeCustomPrime(10 ** 10, 10 ** 15)))
-        self.product = self.largeprimes[0] * self.largeprimes[1]
-        print("n = " + str(self.product))
-        self.totient = (self.largeprimes[0] - 1) * (self.largeprimes[1] - 1)
-        print("toitent = " + str(self.totient))
-        self.generateexponent()
-        print("Exponenet = " + str(self.exponent))
-        print("Generating keys")
-        self.privatekey = self.extendedeuclidean(self.totient)
-        print("private = " + str(self.privatekey))
-        self.publickey = [self.exponent, self.product]
-        print("public = " + str(self.publickey))
+    def generate_key_pair(self):
+        self.large_primes.append(int(Primes.compute_custom_prime(pow(2, 1011), pow(2, 1013))))
+        self.large_primes.append(int(Primes.compute_custom_prime(pow(2, 1011), pow(2, 1013))))
+        self.product = self.large_primes[0] * self.large_primes[1]
+        self.totient = (self.large_primes[0] - 1) * (self.large_primes[1] - 1)
+        self.generate_exponent()
+        self.private_key = self.extended_euclidean(self.totient)
+        self.public_key = [self.exponent, self.product]
         return [self.exponent, self.product]
 
-    def extendedeuclidean(self, totient):
+    def extended_euclidean(self, totient):
         column1_old = totient
         column2_old = totient
         column1 = self.exponent
@@ -57,19 +50,45 @@ class Encrypter:
             if column1 <= 1:
                 return column2
 
-    def generateexponent(self):
-        for i in self.smallprimes:
-            if gcd(i, self.totient) == 1:
+    def generate_exponent(self):
+        for i in self.small_primes:
+            if math.gcd(i, self.totient) == 1:
                 self.exponent = int(i)
                 return i
 
-    def converttexttoblockarray(self, message):
-        if len(str(message)) > len(str(self.product)):
-            self.blocks = map(''.join, zip(*[iter(str(message))]*len(str(self.product))))
+    def convert_text_to_block_array(self, message):
+        char_list = []
+        blocks = []
+        index = 0
+        message = list(message)
+        for i in message:
+            char_list.append('%0*d' % (6, ord(i)))
+        while index <= len(char_list):
+            stage = "1"
+            for i in range((len(str(self.product)) - 1) // 6):
+                if index + i < len(char_list):
+                    stage += char_list[index + i]
+            blocks.append(int(stage))
+            index += (len(str(self.product)) - 1) // 6
+        return blocks
+
+    def convert_block_array_to_text(self, block):
+        text = []
+        for w in block:
+            item = str(w)[1:]
+            item = self.split(item, 6)
+            for i in item:
+                text.append(chr(int(i)))
+        return ''.join(text)
+
+    def split(self, s, chunk_size):
+        a = zip(*[s[i::chunk_size] for i in range(chunk_size)])
+        return [''.join(t) for t in a]
+
+    def encrypt(self, message, public_key):
+        return pow(message, public_key[0], public_key[1])
+
+    def decrypt(self, message, public_key, private_key):
+        return pow(message, int(private_key), int(public_key[1]))
 
 
-    def encrypt(self, message, publickey):
-        return pow(message, publickey[0], publickey[1])
-
-    def decrypt(self, message, publickey):
-        return pow(message, self.privatekey, publickey[1])
